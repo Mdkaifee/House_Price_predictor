@@ -10,7 +10,7 @@ def test_training_and_evaluation():
     train_and_save_model(X_train, y_train, model_path='test_model.pkl')
     model = load_model('test_model.pkl')
     score = evaluate_model(model, X_test, y_test)
-    print(f"Test Model R2 Score: {score:.3f}")
+    print(f"Test Model R² Score: {score:.3f}")
     assert score > 0, "Model should have R2 score > 0"
 
 if __name__ == "__main__":
