@@ -22,7 +22,7 @@ def main():
     train_and_save_model(X_train, y_train, model_path='model.pkl')
     model = load_model('model.pkl')
     acc = evaluate_model(model, X_test, y_test)
-    print(f"Model R2 Score on Test Set: {acc:.3f}")
+    print(f"Model R² Score on Test Set: {acc:.3f}")
 
     import pandas as pd
     df = pd.read_csv('data/house_price.csv')
@@ -60,9 +60,27 @@ def main():
         return
     region_encoded = le.transform([city])[0]
 
-    # Rest of the input
-    BHK = int(input("Enter BHK (number of bedrooms): "))
-    area = float(input("Enter area (sq ft): "))
+    # --- BHK input validation ---
+    while True:
+        try:
+            BHK = int(input("Enter BHK (number of bedrooms): "))
+            if BHK < 1:
+                print("Number of bedrooms must be at least 1.")
+            else:
+                break
+        except ValueError:
+            print("Please enter a valid integer for BHK.")
+
+    # --- Area input validation ---
+    while True:
+        try:
+            area = float(input("Enter area (sq ft): "))
+            if area <= 0:
+                print("Area must be a positive number greater than zero.")
+            else:
+                break
+        except ValueError:
+            print("Please enter a valid number for area.")
 
     input_dict = {
         'region': region_encoded,
@@ -71,8 +89,11 @@ def main():
     }
 
     price = predict_price(model, input_dict)
-    print(f"\nPredicted Sale Price: ₹{price:,.2f}")
-    print("Kaha s layega itna paisa? 😄, Chal dafa ho")
+    if price <= 0:
+        print("\nSorry, predicted price is not valid for the given inputs (result is negative or zero).")
+    else:
+        print(f"\nPredicted Sale Price: ₹{price:,.2f}")
+        print("Kaha s layega itna paisa? 😄, Chal dafa ho,Loan le kr aa")
 
 if __name__ == "__main__":
     main()

@@ -17,7 +17,7 @@ def evaluate_model(model, X_test, y_test):
     mae = mean_absolute_error(y_test, y_pred)
     
     rmse = np.sqrt(mean_squared_error(y_test, y_pred))
-    print(f"R2 Score: {score:.3f}")
+    print(f"R² Score: {score:.3f}")
     print(f"Mean Absolute Error: {mae:.2f}")
     print(f"Root Mean Squared Error: {rmse:.2f}")
     return score
