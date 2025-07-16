@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>House Price Predictor</title>
+  <style>
+    /* Reset some basics */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      margin: 0; padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding-top: 50px;
+      color: #333;
+    }
+    .container {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      width: 400px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #1a73e8;
+    }
+    label {
+      display: block;
+      margin: 15px 0 6px;
+      font-weight: 600;
+      font-size: 1rem;
+      color: #555;
+    }
+    select, input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+    }
+    select:focus, input[type="number"]:focus {
+      border-color: #1a73e8;
+      outline: none;
+      box-shadow: 0 0 5px rgba(26, 115, 232, 0.5);
+    }
+    button {
+      margin-top: 25px;
+      width: 100%;
+      padding: 12px;
+      background-color: #1a73e8;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #155bb5;
+    }
+    .hide { display: none; }
+    .show { display: block; }
+    .error-msg {
+      background-color: #fcebea;
+      color: #cc1f1a;
+      border: 1px solid #f5c6cb;
+      padding: 10px 15px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-weight: 600;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>House Price Predictor</h1>
+
+    {% if error %}
+      <div class="error-msg">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" novalidate>
+      <label for="state-select">State:</label>
+      <select name="state" id="state-select" required>
+        <option value="" disabled selected>Select state</option>
+        {% for s in states %}
+          <option value="{{ s }}" {% if selected_state == s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+
+      <div id="city-container" class="{% if cities %}show{% else %}hide{% endif %}">
+        <label for="city-select">City:</label>
+        <select name="city" id="city-select" required>
+          {% if cities %}
+            {% for c in cities %}
+              <option value="{{ c }}" {% if selected_city == c %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+          {% else %}
+            <option value="" disabled selected>Select state first</option>
+          {% endif %}
+        </select>
+      </div>
+
+      <label for="bhk-select">BHK:</label>
+      <select name="bhk" id="bhk-select" required>
+        <option value="" disabled {% if not bhk %}selected{% endif %}>Select number of bedrooms</option>
+        {% for i in range(1, 11) %}
+          <option value="{{ i }}" {% if bhk == i %}selected{% endif %}>{{ i }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="area-input">Area (sq ft):</label>
+      <input name="area" id="area-input" type="number" step="0.01" min="0.01" value="{{ area or '' }}" required>
+
+      <button type="submit">Predict</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('state-select').addEventListener('change', function() {
+      const state = this.value;
+      fetch(`/get_cities/${encodeURIComponent(state)}`)
+        .then(response => response.json())
+        .then(data => {
+          const citySelect = document.getElementById('city-select');
+          citySelect.innerHTML = ''; // clear existing options
+
+          if (data.length === 0) {
+            citySelect.innerHTML = '<option value="" disabled selected>No cities found</option>';
+          } else {
+            data.forEach(city => {
+              const option = document.createElement('option');
+              option.value = city;
+              option.textContent = city;
+              citySelect.appendChild(option);
+            });
+          }
+          document.getElementById('city-container').className = 'show';
+        });
+    });
+  </script>
+</body>
+</html>

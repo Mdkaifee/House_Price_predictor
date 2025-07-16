@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prediction Result</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      color: #333;
+    }
+    .result-container {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      width: 350px;
+      text-align: center;
+    }
+    h1 {
+      color: #1a73e8;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    .words {
+      font-size: 1rem;
+      font-style: italic;
+      color: #555;
+      margin-top: -10px;
+      margin-bottom: 20px;
+    }
+    a {
+      display: inline-block;
+      margin-top: 15px;
+      color: white;
+      background-color: #1a73e8;
+      padding: 12px 25px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    a:hover {
+      background-color: #155bb5;
+    }
+  </style>
+</head>
+<body>
+  <div class="result-container">
+    <h1>Predicted Sale Price</h1>
+    <p>₹{{ price | round(2) }}</p>
+    <p class="words">{{ price_in_words | capitalize }}</p>
+    <a href="{{ url_for('home') }}">Make another prediction</a>
+  </div>
+</body>
+</html>
