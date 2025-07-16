@@ -16,3 +16,5 @@ Predict house prices using linear regression based on features like area, locati
 python -m venv venv
 venv\Scripts\activate  # On Windows
 pip install -r requirements.txt
+python tests/test_pipeline.py
+python main.py
